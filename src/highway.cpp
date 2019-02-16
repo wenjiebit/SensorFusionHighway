@@ -34,7 +34,7 @@ pcl::visualization::PCLVisualizer::Ptr simpleHighway ()
   cars.push_back(car3);
   
 
-  bool renderScene = true;
+  bool renderScene = false;
   // render environment
   if(renderScene)
   {
@@ -50,9 +50,19 @@ pcl::visualization::PCLVisualizer::Ptr simpleHighway ()
   if(useLidar)
   {
   	Lidar* lidar = new Lidar(cars,0);
-  	lidar->scan();
-  	//renderRays(viewer,lidar->position,lidar->points);
-  	renderPointCloud(viewer,lidar->points);
+  	// scan the enviroment using ray casting to create a new pcd 
+  	pcl::PointCloud<pcl::PointXYZ> pointCloud = lidar->scan();
+  	// load an already saved pcd
+  	//pcl::PointCloud<pcl::PointXYZ> pointCloud = lidar->loadPcd("../src/sensors/data/pcd/simpleHighway.pcd");
+
+  	// render the lidar rays
+  	//renderRays(viewer,lidar->position,pointCloud);
+  	// render the point cloud data
+  	renderPointCloud(viewer,pointCloud);
+
+  	// save pcd file
+  	lidar->savePcd(pointCloud,"../src/sensors/data/pcd/simpleHighway.pcd");
+
   }
   
   

@@ -71,8 +71,8 @@ struct Car
 };
 
 void renderHighway(pcl::visualization::PCLVisualizer::Ptr& viewer);
-void renderRays(pcl::visualization::PCLVisualizer::Ptr& viewer, const Vect3& origin, const std::vector<Vect3>& points);
+void renderRays(pcl::visualization::PCLVisualizer::Ptr& viewer, const Vect3& origin, const pcl::PointCloud<pcl::PointXYZ>& cloud);
 void clearRays(pcl::visualization::PCLVisualizer::Ptr& viewer);
-void renderPointCloud(pcl::visualization::PCLVisualizer::Ptr& viewer, const std::vector<Vect3>& points);
+void renderPointCloud(pcl::visualization::PCLVisualizer::Ptr& viewer, const pcl::PointCloud<pcl::PointXYZ>& cloud);
 
 #endif

@@ -17,11 +17,11 @@ void renderHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
 }
 
 int countRays = 0;
-void renderRays(pcl::visualization::PCLVisualizer::Ptr& viewer, const Vect3& origin, const std::vector<Vect3>& points)
+void renderRays(pcl::visualization::PCLVisualizer::Ptr& viewer, const Vect3& origin, const pcl::PointCloud<pcl::PointXYZ>& cloud)
 {
-	for(Vect3 point : points)
+	for(pcl::PointXYZ point : cloud.points)
 	{
-		viewer->addLine(pcl::PointXYZ(origin.x, origin.y, origin.z), pcl::PointXYZ(point.x,point.y,point.z),1,0,0,"ray"+std::to_string(countRays));
+		viewer->addLine(pcl::PointXYZ(origin.x, origin.y, origin.z), point,1,0,0,"ray"+std::to_string(countRays));
 		countRays++;
 	}
 }
@@ -35,18 +35,11 @@ void clearRays(pcl::visualization::PCLVisualizer::Ptr& viewer)
 	}
 }
 
-void renderPointCloud(pcl::visualization::PCLVisualizer::Ptr& viewer, const std::vector<Vect3>& points)
+void renderPointCloud(pcl::visualization::PCLVisualizer::Ptr& viewer, const pcl::PointCloud<pcl::PointXYZ>& cloud)
 {
-	pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_ptr (new pcl::PointCloud<pcl::PointXYZ>);
 
-	for(Vect3 point : points)
-	{
-		pcl::PointXYZ cloudPoint;
-      	cloudPoint.x = point.x;
-      	cloudPoint.y = point.y;
-      	cloudPoint.z = point.z;
-      	point_cloud_ptr->points.push_back(cloudPoint);
-	}
+	pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_ptr (new pcl::PointCloud<pcl::PointXYZ>);
+	*point_cloud_ptr = pcl::PointCloud<pcl::PointXYZ>(cloud);
 
 	viewer->addPointCloud<pcl::PointXYZ> (point_cloud_ptr, "point cloud");
   	viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point cloud");

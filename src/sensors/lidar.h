@@ -25,7 +25,7 @@ struct Ray
 		  castPosition(origin), castDistance(0)
 	{}
 
-	void rayCast(const std::vector<Car>& cars, double minDistance, double maxDistance, std::vector<Vect3>& points, double slopeAngle)
+	void rayCast(const std::vector<Car>& cars, double minDistance, double maxDistance, pcl::PointCloud<pcl::PointXYZ>& cloud, double slopeAngle)
 	{
 		// reset ray
 		castPosition = origin;
@@ -55,7 +55,8 @@ struct Ray
 		}
 
 		if((castDistance >= minDistance)&&(castDistance<=maxDistance))
-			points.push_back(castPosition);
+			cloud.points.push_back(pcl::PointXYZ(castPosition.x, castPosition.y, castPosition.z));
+			
 	}
 
 };
@@ -64,7 +65,7 @@ struct Lidar
 {
 
 	std::vector<Ray> rays;
-	std::vector<Vect3> points;
+	pcl::PointCloud<pcl::PointXYZ> cloud;
 	std::vector<Car> cars;
 	Vect3 position;
 	double groundSlope;
@@ -75,7 +76,7 @@ struct Lidar
 	Lidar(std::vector<Car> setCars, double setGroundSlope)
 		: position(0,0,2.6)
 	{
-		minDistance = 5;
+		minDistance = 0;
 		maxDistance = 50;
 		resoultion = 0.2;
 		cars = setCars;
@@ -99,11 +100,35 @@ struct Lidar
 
 	}
 
-	void scan()
+	pcl::PointCloud<pcl::PointXYZ> scan()
 	{
-		points.clear();
+		cloud.points.clear();
 		for(Ray ray : rays)
-			ray.rayCast(cars, minDistance, maxDistance, points, groundSlope);
+			ray.rayCast(cars, minDistance, maxDistance, cloud, groundSlope);
+
+		cloud.width = cloud.points.size();
+		cloud.height = 1; // one dimensional unorganized point cloud dataset
+		return cloud;
+	}
+
+	void savePcd(pcl::PointCloud<pcl::PointXYZ> cloud, std::string file)
+	{
+		pcl::io::savePCDFileASCII (file, cloud);
+  		std::cerr << "Saved " << cloud.points.size () << " data points to "+file << std::endl;
+	}
+
+	pcl::PointCloud<pcl::PointXYZ> loadPcd(std::string file)
+	{
+
+		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
+
+  		if (pcl::io::loadPCDFile<pcl::PointXYZ> (file, *cloud) == -1) //* load the file
+  		{
+    		PCL_ERROR ("Couldn't read file \n");
+  		}
+  		std::cerr << "Loaded " << cloud->points.size () << " data points from "+file << std::endl;
+
+  		return *cloud;
 	}
 
 
