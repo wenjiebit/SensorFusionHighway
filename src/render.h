@@ -2,7 +2,12 @@
 // Functions and structs used to render the enviroment
 // such as cars and the highway
 
+#ifndef RENDER_H
+#define RENDER_H
 #include <pcl/visualization/pcl_visualizer.h>
+#include <vector>
+#include <string>
+
 
 struct Color
 {
@@ -22,6 +27,12 @@ struct Vect3
 	Vect3(double setX, double setY, double setZ)
 		: x(setX), y(setY), z(setZ)
 	{}
+
+	Vect3 operator+(const Vect3& vec)
+	{
+		Vect3 result(x+vec.x,y+vec.y,z+vec.z);
+		return result;
+	}
 };
 
 struct Car
@@ -40,11 +51,28 @@ struct Car
   	void render(pcl::visualization::PCLVisualizer::Ptr& viewer)
 	{
 		// render bottom of car
-		viewer->addCube(position.x-dimensions.x/2, position.x+dimensions.x/2, position.z, position.z+dimensions.z*2/3, position.y-dimensions.y/2, position.y+dimensions.y/2, color.r, color.g, color.b, name); 
+		viewer->addCube(position.x-dimensions.x/2, position.x+dimensions.x/2, position.y-dimensions.y/2, position.y+dimensions.y/2, position.z, position.z+dimensions.z*2/3, color.r, color.g, color.b, name); 
 		// render top of car
-		viewer->addCube(position.x-dimensions.x/4, position.x+dimensions.x/4, position.z+dimensions.z*2/3, position.z+dimensions.z, position.y-dimensions.y/2, position.y+dimensions.y/2, color.r, color.g, color.b, name+"Top"); 
+		viewer->addCube(position.x-dimensions.x/4, position.x+dimensions.x/4, position.y-dimensions.y/2, position.y+dimensions.y/2, position.z+dimensions.z*2/3, position.z+dimensions.z, color.r, color.g, color.b, name+"Top"); 
 	}
 
+	// collision helper function
+	bool inbetween(double point, double center, double range)
+	{
+		return (center-range <= point) && (center+range >= point);
+	}
+
+	bool checkCollision(Vect3 point)
+	{
+		return (inbetween(point.x,position.x,dimensions.x/2)&&inbetween(point.y,position.y,dimensions.y/2)&&inbetween(point.z,position.z+dimensions.z/3,dimensions.z/3))||
+			   (inbetween(point.x,position.x,dimensions.x/4)&&inbetween(point.y,position.y,dimensions.y/2)&&inbetween(point.z,position.z+dimensions.z*5/6,dimensions.z/6));
+
+	}
 };
 
 void renderHighway(pcl::visualization::PCLVisualizer::Ptr& viewer);
+void renderRays(pcl::visualization::PCLVisualizer::Ptr& viewer, const Vect3& origin, const std::vector<Vect3>& points);
+void clearRays(pcl::visualization::PCLVisualizer::Ptr& viewer);
+void renderPointCloud(pcl::visualization::PCLVisualizer::Ptr& viewer, const std::vector<Vect3>& points);
+
+#endif
