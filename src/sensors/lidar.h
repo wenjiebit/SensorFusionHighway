@@ -1,6 +1,8 @@
 #ifndef LIDAR_H
 #define LIDAR_H
-#include "../render.h"
+#include "../render/render.h"
+#include <ctime>
+#include <chrono>
 
 const double pi = 3.1415;
 
@@ -25,7 +27,7 @@ struct Ray
 		  castPosition(origin), castDistance(0)
 	{}
 
-	void rayCast(const std::vector<Car>& cars, double minDistance, double maxDistance, pcl::PointCloud<pcl::PointXYZ>& cloud, double slopeAngle)
+	void rayCast(const std::vector<Car>& cars, double minDistance, double maxDistance, pcl::PointCloud<pcl::PointXYZ>::Ptr& cloud, double slopeAngle, double sderr)
 	{
 		// reset ray
 		castPosition = origin;
@@ -55,7 +57,13 @@ struct Ray
 		}
 
 		if((castDistance >= minDistance)&&(castDistance<=maxDistance))
-			cloud.points.push_back(pcl::PointXYZ(castPosition.x, castPosition.y, castPosition.z));
+		{
+			// add noise based on standard deviation error
+			double rx = ((double) rand() / (RAND_MAX));
+			double ry = ((double) rand() / (RAND_MAX));
+			double rz = ((double) rand() / (RAND_MAX));
+			cloud->points.push_back(pcl::PointXYZ(castPosition.x+rx*sderr, castPosition.y+ry*sderr, castPosition.z+rz*sderr));
+		}
 			
 	}
 
@@ -65,72 +73,65 @@ struct Lidar
 {
 
 	std::vector<Ray> rays;
-	pcl::PointCloud<pcl::PointXYZ> cloud;
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
 	std::vector<Car> cars;
 	Vect3 position;
 	double groundSlope;
 	double minDistance;
 	double maxDistance;
 	double resoultion;
+	double sderr;
 
 	Lidar(std::vector<Car> setCars, double setGroundSlope)
-		: position(0,0,2.6)
+		: cloud(new pcl::PointCloud<pcl::PointXYZ>()), position(0,0,2.6)
 	{
+		// TODO:: set minDistance to 5 to remove points from roof of ego car
 		minDistance = 0;
 		maxDistance = 50;
 		resoultion = 0.2;
+		// TODO:: set sderr to 0.2 to get more interesting pcd files
+		sderr = 0.0;
 		cars = setCars;
 		groundSlope = setGroundSlope;
 
-		int numLayers = 8;
+		// TODO:: increase number of layers to 8 to get higher resoultion pcd
+		int numLayers = 3;
 		// the steepest vertical angle
 		double steepestAngle =  30.0*(-pi/180);
 		double angleRange = 26.0*(pi/180);
+		// TODO:: set to pi/64 to get higher resoultion pcd
+		double horizontalAngleInc = pi/6;
 
 		double angleIncrement = angleRange/numLayers;
 
 		for(double angleVertical = steepestAngle; angleVertical < steepestAngle+angleRange; angleVertical+=angleIncrement)
 		{
-			for(double angle = 0; angle <= 2*pi; angle+=pi/64)
+			for(double angle = 0; angle <= 2*pi; angle+=horizontalAngleInc)
 			{
 				Ray ray(position,angle,angleVertical,resoultion);
 				rays.push_back(ray);
 			}
 		}
-
 	}
 
-	pcl::PointCloud<pcl::PointXYZ> scan()
+	~Lidar()
 	{
-		cloud.points.clear();
-		for(Ray ray : rays)
-			ray.rayCast(cars, minDistance, maxDistance, cloud, groundSlope);
+		// pcl uses boost smart pointers for cloud pointer so we don't have to worry about manually freeing the memory
+	}
 
-		cloud.width = cloud.points.size();
-		cloud.height = 1; // one dimensional unorganized point cloud dataset
+	pcl::PointCloud<pcl::PointXYZ>::Ptr scan()
+	{
+		cloud->points.clear();
+		auto startTime = std::chrono::steady_clock::now();
+		for(Ray ray : rays)
+			ray.rayCast(cars, minDistance, maxDistance, cloud, groundSlope, sderr);
+		auto endTime = std::chrono::steady_clock::now();
+		auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+		cout << "ray casting took " << elapsedTime.count() << " milliseconds" << endl;
+		cloud->width = cloud->points.size();
+		cloud->height = 1; // one dimensional unorganized point cloud dataset
 		return cloud;
 	}
-
-	void savePcd(pcl::PointCloud<pcl::PointXYZ> cloud, std::string file)
-	{
-		pcl::io::savePCDFileASCII (file, cloud);
-  		std::cerr << "Saved " << cloud.points.size () << " data points to "+file << std::endl;
-	}
-
-	pcl::PointCloud<pcl::PointXYZ> loadPcd(std::string file)
-	{
-
-		pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
-
-  		if (pcl::io::loadPCDFile<pcl::PointXYZ> (file, *cloud) == -1) //* load the file
-  		{
-    		PCL_ERROR ("Couldn't read file \n");
-  		}
-  		std::cerr << "Loaded " << cloud->points.size () << " data points from "+file << std::endl;
-
-  		return *cloud;
-	}
-
 
 };
 
