@@ -22,9 +22,10 @@ My name is Aaron Brown, and while working at Udacity I worked on teaching, and i
 To get started with this course we will first dive into how to process lidar data, which is called Point Cloud Data (PCD for short). We will be working with a C++ environment, so some fimilarity with C++ will defintely be helpful. PCL is an open source C++ library for working with point clouds, we will be using it to do the majority of our lidar processing. To get started clone this repository, all the source code that this course will be going over is in the **src** directory. Installation instructions for PCL can be found below, currently instruction for just Linux but you can run on Windows or Mac too. After the repository has been cloned and C++ and PCL are setup check out the first module below on **Lidar Obstacle Dection**. I hope you enjoy the course!
 
 ## Let's Get Started
+
 ### Lidar Obstacle Detection
 
-// link here
+https://github.com/awbrown90/SensorFusionHighway/blob/master/LidarObstacleDetection/LidarIntroduction.md
 
 
 ## Installation
