@@ -96,4 +96,4 @@ Also for more information about using pcl to perform segmentation, check out thi
 
 Check out the next section, Clustering Obstacles.
 
-// link here to next section 
+https://github.com/awbrown90/SensorFusionHighway/blob/master/LidarObstacleDetection/ClusteringObstacles.md
