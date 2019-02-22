@@ -92,6 +92,8 @@ In the example above we are using 100 iterations, and a distance tolerance of 0.
 
 Now that we are able to seperate obstacles points from points on the road, let's see how we can further break up our obstacle cloud and identify individual cars using Euclidean clustering.
 
+Also for more information about using pcl to perform segmentation, check out this doc, http://pointclouds.org/documentation/tutorials/extract_indices.php#id1
+
 Check out the next section, Clustering Obstacles.
 
 // link here to next section 
