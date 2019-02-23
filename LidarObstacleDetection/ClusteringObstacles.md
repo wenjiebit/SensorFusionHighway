@@ -93,10 +93,4 @@ You have graduated from the highway simulator, and are now ready to tackle real 
 
 Check out the next section, Working with Real PCD.
 
-// link here to next section 
-
-
-
-
-
-
+https://github.com/awbrown90/SensorFusionHighway/blob/master/LidarObstacleDetection/WorkingWithRealPCD.md

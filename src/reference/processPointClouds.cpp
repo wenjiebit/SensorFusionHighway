@@ -39,6 +39,24 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
   region.setInputCloud(cloudFiltered);
   region.filter(*cloudRegion);
 
+  std::vector<int> indices;
+  
+  pcl::CropBox<PointT> roof();
+  region.setMin(Eigen::Vector4f (-1.5, -1.7, -1, 1));
+  region.setMax(Eigen::Vector4f (2.6, 1.7, -.4, 1));
+  region.setInputCloud(cloudRegion);
+  region.filter(indices);
+
+  pcl::PointIndices::Ptr inliers {new pcl::PointIndices};
+  for(int point : indices)
+    inliers->indices.push_back(point);
+  
+  pcl::ExtractIndices<PointT> extract;
+  extract.setInputCloud (cloudRegion);
+  extract.setIndices (inliers);
+  extract.setNegative (true);
+  extract.filter (*cloudRegion);
+
   auto endTime = std::chrono::steady_clock::now();
   auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
   std::cout << "filtering took " << elapsedTime.count() << " milliseconds" << std::endl;
