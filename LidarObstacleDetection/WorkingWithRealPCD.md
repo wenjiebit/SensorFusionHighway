@@ -102,7 +102,7 @@ Awesome, congrats for making it through the point process pipeline on a real pcd
 
 Check out the final section on lidar obstacle detection, Processing Streaming PCD.
 
-// link here to next section 
+https://github.com/awbrown90/SensorFusionHighway/blob/master/LidarObstacleDetection/ProcessingStreamingPCD.md
 
 
 
