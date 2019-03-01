@@ -6,7 +6,7 @@ In the previous section we were able to process obstacle detection on a single r
 void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointClouds<pcl::PointXYZI>* pointProcessorI, const pcl::PointCloud<pcl::PointXYZI>::Ptr& inputCloud)
 ```
 
-Notice that in the function header we can make `inputCloud` a constant reference by doing `const` and `&` at the end of the variable definition. We don't have to do this but we are not actually changing the inputCloud at all, just using it as an input for our point processor function. The benefit of using a constant reference is better memory efficiency, since we don't have to write to that variable's memory, just read from it, so it's a slight performance increase.
+Notice that in the function header we can make `inputCloud` a constant reference by doing `const` and `&` at the end of the variable definition. We don't have to do this but we are not actually changing the inputCloud at all, just using it as an input for our point processor function. The benefit of using a constant reference is better memory efficiency, since we don't have to write to that variable's memory, just read from it, so it's a slight performance increase. If we do make this a const reference though, we need to make sure not modify or reassign inputCloud, or else we will get a compile error.
 
 So now instead of creating our point processor, and loading pcl files from inside `cityBlock` we will do this in side the `main` function in `environment.cpp` right after where we set up the pcl viewer camera position.
 
