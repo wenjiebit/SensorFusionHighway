@@ -34,6 +34,7 @@ std::vector<Car> initHighway(bool renderScene, pcl::visualization::PCLVisualizer
 	return cars;
 }
 
+
 void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
 {
 	// ----------------------------------------------------
@@ -49,6 +50,7 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
 	// TODO:: Create point processor
   
 }
+
 
 //setAngle: SWITCH CAMERA ANGLE {XY, TopDown, Side, FPS}
 void initCamera(CameraAngle setAngle, pcl::visualization::PCLVisualizer::Ptr& viewer)
@@ -72,6 +74,7 @@ void initCamera(CameraAngle setAngle, pcl::visualization::PCLVisualizer::Ptr& vi
   		viewer->addCoordinateSystem (1.0);
 
 }
+
 
 int main (int argc, char** argv)
 {
