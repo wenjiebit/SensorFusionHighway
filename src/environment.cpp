@@ -11,19 +11,16 @@
 std::vector<Car> initHighway(bool renderScene, pcl::visualization::PCLVisualizer::Ptr& viewer)
 {
 
-	std::vector<Car> cars;
-	
 	Car egoCar( Vect3(0,0,0), Vect3(4,2,2), Color(0,1,0), "egoCar");
-	cars.push_back(egoCar);
-	
 	Car car1( Vect3(15,0,0), Vect3(4,2,2), Color(0,0,1), "car1");
-	cars.push_back(car1);
-	
-	Car car2( Vect3(8,-4,0), Vect3(4,2,2), Color(0,0,1), "car2");
-	cars.push_back(car2);
-		
+	Car car2( Vect3(8,-4,0), Vect3(4,2,2), Color(0,0,1), "car2");	
 	Car car3( Vect3(-12,4,0), Vect3(4,2,2), Color(0,0,1), "car3");
-	cars.push_back(car3);
+  
+  std::vector<Car> cars;
+  cars.push_back(egoCar);
+  cars.push_back(car1);
+  cars.push_back(car2);
+  cars.push_back(car3);
 
 	if(renderScene)
 	{
@@ -35,7 +32,6 @@ std::vector<Car> initHighway(bool renderScene, pcl::visualization::PCLVisualizer
 	}
 
 	return cars;
-
 }
 
 void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
@@ -82,15 +78,13 @@ int main (int argc, char** argv)
 	std::cout << "starting enviroment" << std::endl;
 
 	pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
-
 	CameraAngle setAngle = XY;
-  	initCamera(setAngle, viewer);
+  initCamera(setAngle, viewer);
+  simpleHighway(viewer);
 
-  	simpleHighway(viewer);
-  
-  	while (!viewer->wasStopped ())
-  	{
-    	viewer->spinOnce ();
-  	}
+  while (!viewer->wasStopped ())
+  {
+    viewer->spinOnce ();
+  }
   	
 }
