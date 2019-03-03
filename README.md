@@ -2,7 +2,7 @@
 
 <img src="https://github.com/awbrown90/SensorFusionHighway/blob/master/media/ObstacleDetectionFPS.gif" width="700" height="400" />
 
-### Weclome to the Sensor Fusion course for self-driving cars.
+### Welcome to the Sensor Fusion course for self-driving cars.
 
 #### Are you excited to learn more about working with lidar data, and using it to track multiple objects along with radar information? Then check out this course. 
 
