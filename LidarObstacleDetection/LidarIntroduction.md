@@ -101,7 +101,7 @@ The result above is without noise and lidar minDistance set to zero. Wwith a hig
 
 ## Outro
 
-Awesome! You have created a lidar sensor in your scene and have generated high resoultion point cloud data with it. The data that you have generated is sufficent to detect the sourrounding cars. Next, you will look at creating a point processor object to detect which parts of the cloud represent the cars in traffic.
+Awesome! You have created a lidar sensor in your scene and have generated a high resoultion point cloud data with it. The data that you have generated is sufficent to detect the sourrounding cars. Next, you will look at creating a point processor object to detect which parts of the cloud represent the cars in traffic.
 
 Check out the next section, Point Cloud Segmentation.
 
