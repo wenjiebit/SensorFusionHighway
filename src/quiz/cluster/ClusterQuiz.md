@@ -30,6 +30,10 @@ The answer is D. Let's look at why this is. First the root (-6.2, 7) and the poi
 
 Logically this is how points are inserted, how about doing this in C++? Implementing a recursive helper function to insert points can be a very nice way to update Nodes. The basic idea is the tree is traversed until the Node is arrives at is NULL in which case a new Node is created and assigned at that current NULL Node. For assinging a Node, one idea is to use a double pointer, you could pass in a pointer to the node, starting at root, and then when you want to assign that node, derefrence pointer and assign it to the newly created Node. Another way of achieving this is by using a pointer reference as well. 
 
+### Improving the Tree Structure
+
+Having a balanced tree that evenly splits regions improves the search time for finding points later. To improve the tree insert points that alternate between splitting the x region and the y region. To do this pick the median of sorted x and y points. For instance if you are inserting the first four points that we used above (-6.3,8.4),(-6.2,7),(-5.2,7.1),(-5.7,6.3) we would first insert (-5.2,7.1) since its the median for the x points, if there is an even number of elements the lower median is chosen. The next point to be insorted would be (-6.2,7) the median of the three points for y. Followed by (-5.7,6.3) the lower median between the two for x, and then finally (-6.3,8.4). This ordering will allow the tree to more evenly split the region space and improving searching later.
+
 ## Searching Nearby Points in the Tree
 
 Once points are able to be inserted into the tree, the next step is being able to search for nearby points (points within a distance of distanceTol) inside the tree compared to a given pivot point. The kd-tree is able to split regions and allows certain regions to be completly ruled out, speeding up the process of finding nearby neighbors. The naive approach of finding nearby neighbors is to go through every single point in the tree and compare its distance with the pivots, selecting point indices that fall with in the distance tolerance. Instead with the kd-tree we can compare distance within a boxed square that is 2 x distanceTol for length, centered around the pivot point. If the current node point is within this box then we can directly calculate the distance and see if we add it to the list of `ids`. Then we see if our box crosses over the node division region and if it does compare that next node. We do this recursively, with the advantage being that if the box region is not inside some division region we completly skip that branch.
@@ -76,3 +80,5 @@ euclideanCluster(points, tree, 3.0);
 There are three clusters found, using a distance tolerance of 3.0. Each cluster group is colored a differently, red, green, and blue.
 
 <img src="https://github.com/awbrown90/SensorFusionHighway/blob/master/media/clusterKdtree.png" width="700" height="400" />
+
+
